@@ -1,0 +1,43 @@
+%{
+#include <stdio.h>
+%}
+
+%token <p_string> LITERAL
+
+%token SELECT FROM WHERE OR AND ASTERISC SEMICOLON COMMA PONTO LP RP AC FC IGUAL MAIOR MAIOR_IGUAL MENOR MENOR_IGUAL DIFERENTE 
+%token MAIS MENOS DIVISAO MODULO COMMENT INSERT INTO VALUES UPPDATE SET DELETE LIKE LIMIT OFFSET NOT NULL PRIMARY KEY UNIQUE fk CHECK
+%token CREATE ALTER TABLE CROSS INNER LEFT RIGHT FULL OUTER JOIN ON AS ADD DROP COLUMN MODIFY CONSTRAINT DATABASE GROUP ORDER BY SMALLINT 
+%token INTEGER BIGINT SERIAL BIGSERIAL REAL DOUBLE PRECISION NUMERIC CHAR VARCHAR TEXT DATE TIME TIMESTAMP INTERVAL BOOLEAN BYTEA 
+%token INET CIDR POINT LINE LSEG BOX PATH POLYGON CIRCLE ARRAY_DE_INTEIROS ARRAY_DE_VARCHAR ARRAY_DE_NUMERIC RECORD 
+
+%start  expressao
+%%
+
+operadores: IGUAL | MENOR_IGUAL | MENOR | MAIOR_IGUAL | MAIOR_IGUAL
+
+expressao:  inicio_sentenca 
+
+inicio_sentenca:  exp_select | exp_delete | exp_update | exp_create 
+
+exp_select:  SELECT LITERAL FROM LITERAL 
+
+exp_where:   WHERE LITERAL operadores LITERAL  
+
+exp_group:  GROUP BY LITERAL
+
+exp_create: CREATE target_create;
+
+target_create: TABLE | DATABASE
+
+
+%%
+
+int yyerror(const char *msg) {
+    fprintf(stderr, "Erro de sintaxe: %s\n", msg);
+    return 0;
+}
+
+int main() {
+    yyparse();
+    return 0;
+}
