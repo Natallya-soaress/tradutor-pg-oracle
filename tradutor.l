@@ -1,5 +1,8 @@
 %{
+    
 #include <stdio.h>
+#include "y.tab.h"
+
 %}
 
 %option noyywrap
@@ -42,7 +45,7 @@ LITERAl [a-zA-Z_0-9]+
 "LIMIT"                 { return LIMIT; }
 "OFFSET"                { return OFFSET; }
 "NOT"                   { return NOT; }
-"NULL"                  { return NULL; }
+"NULL"                  { return NULLL; }
 "PRIMARY"               { return PRIMARY; }
 "KEY"                   { return KEY; }
 "UNIQUE"                { return UNIQUE; }
@@ -75,7 +78,8 @@ LITERAl [a-zA-Z_0-9]+
 "SERIAL"                { return SERIAL; }
 "BIGSERIAL"             { return BIGSERIAL; }
 "REAL"                  { return REAL; }
-"DOUBLE PRECISION"      { return DOUBLE PRECISION; }
+"DOUBLE"                { return DOUBLE; }
+"PRECISION"             { return PRECISION; }
 "NUMERIC"               { return NUMERIC; }
 "CHAR"                  { return CHAR; }
 "VARCHAR"               { return VARCHAR; }
@@ -95,18 +99,8 @@ LITERAl [a-zA-Z_0-9]+
 "PATH"                  { return PATH; }
 "POLYGON"               { return POLYGON; }
 "CIRCLE"                { return CIRCLE; }
-"INTEGER"               { return ARRAY DE INTEIROS; }
-"VARCHAR"               { return ARRAY DE VARCHAR; }
-"NUMERIC"               { return ARRAY DE NUMERIC; }
 "RECORD"                { return RECORD; }
-{LITERAl}               { return LITERAl; }
+{LITERAl}               { yylval.p_string = malloc(yyleng); sprintf(yylval.p_string, "%s", yytext); return LITERAL; }
 . {}
 
 %% 
-
-
-
-int main() {
-    yylex();
-    return 0;
-}
