@@ -1,1 +1,1 @@
-SELECT * FROM tabela;
+CREATE TABLE tableName();

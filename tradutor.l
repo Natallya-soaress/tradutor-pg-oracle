@@ -7,7 +7,7 @@
 
 %option noyywrap
 
-LITERAl [a-zA-Z_0-9]+
+LITERAl [a-zA-Z_0-9".%]+
 
 %% 
 
@@ -44,12 +44,13 @@ LITERAl [a-zA-Z_0-9]+
 "LIKE"                  { return LIKE; }
 "LIMIT"                 { return LIMIT; }
 "OFFSET"                { return OFFSET; }
+"BETWEEN"               { return BETWEEN; }
 "NOT"                   { return NOT; }
 "NULL"                  { return NULLL; }
 "PRIMARY"               { return PRIMARY; }
 "KEY"                   { return KEY; }
 "UNIQUE"                { return UNIQUE; }
-"references"            { return fk; }
+"references"            { return FK; }
 "CHECK"                 { return CHECK; }
 "CREATE"                { return CREATE; }
 "ALTER"                 { return ALTER; }

@@ -1,1 +1,1 @@
-posdnexp
+CREATE TABLE tableName
