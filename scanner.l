@@ -91,7 +91,8 @@ LITERAl [a-zA-Z_0-9".%]+
 "TIMESTAMP"             { return TIMESTAMP; }
 "INTERVAL"              { return INTERVAL; }
 "BOOLEAN"               { return BOOLEAN; }
-"BYTEA"                 { return BYTEA; }
+"BYTEA"                 { return BYTEAA; }
+"SERIAL"                { return SERIALL; }
 {LITERAl}               { yylval.p_string = malloc(yyleng); sprintf(yylval.p_string, "%s", yytext); return LITERAL; }
 . {}
 

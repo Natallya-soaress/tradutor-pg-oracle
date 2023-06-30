@@ -3,8 +3,8 @@
 #include <stdlib.h>
 
 FILE *result;
-int yylex();
 extern int yylineno;
+int err = 1;
 
 void ptg_write(char *text){ 
     int total_length = sizeof(text);
@@ -16,6 +16,8 @@ void ptg_write(char *text){
 
 %}
 
+%define parse.error verbose
+
 %union {
   char *p_string;
   int   yint;
@@ -26,8 +28,8 @@ void ptg_write(char *text){
 %token SELECT FROM WHERE OR AND ASTERISC SEMICOLON COMMA PONTO LP RP AC FC IGUAL MAIOR MAIOR_IGUAL MENOR MENOR_IGUAL DIFERENTE BETWEEN
 %token MAIS MENOS DIVISAO MODULO COMMENT INSERT INTO VALUES UPDATE SET DELETE LIKE LIMIT OFFSET NOT NULLL PRIMARY KEY UNIQUE FK CHECK
 %token CREATE ALTER TABLE CROSS INNER LEFT RIGHT FULL OUTER JOIN ON AS ADD DROP COLUMN MODIFY FOREIGN CONSTRAINT DATABASE GROUP ORDER BY SMALLINT 
-%token INTEGER BIGINT SERIAL BIGSERIAL REAL DOUBLE PRECISION NUMERIC CHAR VARCHAR TEXT DATE TIME TIMESTAMP INTERVAL BOOLEAN BYTEA 
-%token BYTEA REFERENCES
+%token INTEGER BIGINT SERIALL BIGSERIAL REAL DOUBLE PRECISION NUMERIC CHAR VARCHAR TEXT DATE TIME TIMESTAMP INTERVAL BOOLEAN BYTEA 
+%token BYTEAA REFERENCES SERIAL
 
 %%
 
@@ -49,7 +51,7 @@ exp_create: exp_create_table
 
 exp_create_table: inicio TABLE { ptg_write("TABLE ");} literal colunas_create semicolon
 
-exp_create_database: inicio DATABASE { ptg_write("DATABASE ");}  literal semicolon
+exp_create_database: inicio DATABASE { ptg_write("DATABASE ");} literal semicolon
 
 tipo_dados: CHAR { ptg_write(" CHAR");}
 | VARCHAR { ptg_write(" VARCHAR2");} lp literal rp
@@ -67,7 +69,7 @@ tipo_dados: CHAR { ptg_write(" CHAR");}
 | TIMESTAMP
 | INTERVAL { ptg_write(" INTERVAL");}
 | BOOLEAN
-| BYTEA { ptg_write(" BLOB");}
+| BYTEAA { ptg_write(" BLOB");}
 ;
 
 operadores_comparativos: IGUAL { ptg_write(" = ");}
@@ -86,14 +88,21 @@ literais : LITERAL { ptg_write($1);}
 | literais COMMA LITERAL { ptg_write(", "); ptg_write($3);}
 ;
 
-restricoes: NOT { ptg_write(" NOT");} NULLL { ptg_write(" NULL ");} comma restricoes
-| NULLL { ptg_write(" NULL ");} comma restricoes
-| PRIMARY KEY { ptg_write(" PRIMARY KEY ");} comma restricoes 
-| foreigh_key comma restricoes
+restricoes: NOT { ptg_write(" NOT");} NULLL { ptg_write(" NULL");} 
+| NULLL { ptg_write(" NULL ");} 
+| primary_key
+| foreigh_key 
+| unique
+| restricoes comma restricoes
 |
 ;
 
 foreigh_key: CONSTRAINT literal FOREIGN KEY { ptg_write(" FOREIGN KEY ");} lp literal rp REFERENCES {ptg_write(" REFERENCES ") ;} literal lp literal rp
+;
+
+primary_key: PRIMARY KEY { ptg_write(" PRIMARY KEY ");} lp literais rp
+| PRIMARY KEY { ptg_write(" PRIMARY KEY");}
+;
 
 where: WHERE { ptg_write(" WHERE ");}
 
@@ -109,6 +118,7 @@ funcoes_where: literal BETWEEN { ptg_write(" BETWEEN ");} literal AND { ptg_writ
 
 colunas: literal tipo_dados restricoes
 | literal tipo_dados restricoes comma colunas
+| PRIMARY KEY { ptg_write("PRIMARY KEY ");} lp literais rp comma colunas
 ;
 
 colunas_create: lp colunas rp
@@ -116,6 +126,11 @@ colunas_create: lp colunas rp
 
 atributos: ASTERISC { ptg_write("*");}
 | literais 
+;
+
+unique: UNIQUE { ptg_write(" UNIQUE");}
+| UNIQUE { ptg_write("UNIQUE");} lp literais rp
+| CONSTRAINT literal UNIQUE { ptg_write(" UNIQUE");} lp literais rp
 ;
 
 literal: LITERAL { ptg_write($1);}
@@ -130,16 +145,16 @@ comma: COMMA { ptg_write(", ");}
 
 from: FROM { ptg_write(" FROM ");} 
 
-rp: RP {ptg_write(") ") ;}
+rp: RP {ptg_write(")") ;}
 
 lp: LP {ptg_write("(") ;}
 
 
 %%
 
-int yyerror(){
-  printf("Error \n");
-  return 1;
+yyerror (char *s){
+    printf("\033[0;31m%s na linha \033[0;37m%d\033[0;37m\n", s, yylineno);
+    err = 0;
 }
 
 int main(){

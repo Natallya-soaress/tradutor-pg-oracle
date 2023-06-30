@@ -1,11 +1,7 @@
-CREATE TABLE contacts(
-   contact_id INTEGER,
-   customer_id INTEGER,
-   contact_name VARCHAR(255) NOT NULL,
-   phone VARCHAR(15),
-   email VARCHAR(100),
-   PRIMARY KEY(contact_id),
-   CONSTRAINT fk_customer
-      FOREIGN KEY(customer_id) 
-	  REFERENCES customers(customer_id)
+CREATE TABLE Alunos (
+  PRIMARY KEY (Coluna1), 
+  Nome_Aluno TEXT NOT NULL,
+  CPF TEXT,
+  Idade NUMERIC,
+  CONSTRAINT nomee UNIQUE (Nome_Aluno, Hora_Matricula)
 );

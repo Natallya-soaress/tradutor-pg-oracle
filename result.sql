@@ -1,1 +1,1 @@
-CREATE TABLE contacts(contact_id NUMBER(10), customer_id NUMBER(10), contact_name VARCHAR2(255)  NOT NULL , 
+CREATE TABLE Alunos(PRIMARY KEY (Coluna1), Nome_Aluno CLOB NOT NULL, CPF CLOB, Idade NUMBER, nomee UNIQUE(Nome_Aluno, Hora_Matricula));
