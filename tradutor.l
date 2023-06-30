@@ -80,7 +80,6 @@ LITERAl [a-zA-Z_0-9".%]+
 "BIGSERIAL"             { return BIGSERIAL; }
 "REAL"                  { return REAL; }
 "DOUBLE"                { return DOUBLE; }
-"PRECISION"             { return PRECISION; }
 "NUMERIC"               { return NUMERIC; }
 "CHAR"                  { return CHAR; }
 "VARCHAR"               { return VARCHAR; }
@@ -91,16 +90,6 @@ LITERAl [a-zA-Z_0-9".%]+
 "INTERVAL"              { return INTERVAL; }
 "BOOLEAN"               { return BOOLEAN; }
 "BYTEA"                 { return BYTEA; }
-"INET"                  { return INET; }
-"CIDR"                  { return CIDR; }
-"POINT"                 { return POINT; }
-"LINE"                  { return LINE; }
-"LSEG"                  { return LSEG; }
-"BOX"                   { return BOX; }
-"PATH"                  { return PATH; }
-"POLYGON"               { return POLYGON; }
-"CIRCLE"                { return CIRCLE; }
-"RECORD"                { return RECORD; }
 {LITERAl}               { yylval.p_string = malloc(yyleng); sprintf(yylval.p_string, "%s", yytext); return LITERAL; }
 . {}
 

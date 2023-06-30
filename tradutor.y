@@ -27,7 +27,7 @@ void ptg_write(char *text){
 %token MAIS MENOS DIVISAO MODULO COMMENT INSERT INTO VALUES UPDATE SET DELETE LIKE LIMIT OFFSET NOT NULLL PRIMARY KEY UNIQUE FK CHECK
 %token CREATE ALTER TABLE CROSS INNER LEFT RIGHT FULL OUTER JOIN ON AS ADD DROP COLUMN MODIFY CONSTRAINT DATABASE GROUP ORDER BY SMALLINT 
 %token INTEGER BIGINT SERIAL BIGSERIAL REAL DOUBLE PRECISION NUMERIC CHAR VARCHAR TEXT DATE TIME TIMESTAMP INTERVAL BOOLEAN BYTEA 
-%token INET CIDR POINT LINE LSEG BOX PATH POLYGON CIRCLE RECORD 
+%token BYTEA
 
 %%
 
@@ -43,11 +43,26 @@ exp_select: inicio atributos from literal semicolon
 | inicio atributos from literal where condicoes semicolon
 ;
 
-opcoes_create: TABLE { ptg_write("TABLE ");} 
-| DATABASE { ptg_write("DATABASE ");} 
-;
+exp_create: inicio opcoes_create literal LP colunas RP semicolon
 
-exp_create: inicio opcoes_create literal semicolon
+tipo_dados: CHAR { ptg_write(" CHAR");}
+| VARCHAR { ptg_write(" VARCHAR2");}
+| TEXT { ptg_write(" CLOB");}
+| SMALLINT { ptg_write(" NUMBER(5)");}
+| INTEGER { ptg_write(" NUMBER(10)");}
+| BIGINT { ptg_write(" NUMBER(19)");}
+| SERIAL { ptg_write(" NUMBER(10)");}
+| BIGSERIAL { ptg_write(" NUMBER(19)");}
+| REAL { ptg_write(" FLOAT");}
+| DOUBLE { ptg_write(" FLOAT");}
+| NUMERIC { ptg_write(" NUMBER");}
+| DATE { ptg_write(" DATE");}
+| TIME { ptg_write(" DATE");}
+| TIMESTAMP
+| INTERVAL { ptg_write(" INTERVAL");}
+| BOOLEAN
+| BYTEA { ptg_write(" BLOB");}
+;
 
 operadores_comparativos: IGUAL { ptg_write(" = ");}
 | MENOR_IGUAL { ptg_write(" <= ");}
@@ -65,9 +80,10 @@ literais : LITERAL { ptg_write($1);}
 | literais COMMA LITERAL { ptg_write(", "); ptg_write($3);}
 ;
 
+/*
 parenteses: LP {ptg_write("\( ") ;}
 | RP {ptg_write(" \)");}
-;
+; */
 
 where: WHERE { ptg_write(" WHERE ");}
 
@@ -81,6 +97,14 @@ funcoes_where: literal BETWEEN { ptg_write(" BETWEEN ");} literal AND { ptg_writ
 | literal NOT { ptg_write(" NOT");} LIKE { ptg_write(" LIKE ");} literal
 ;
 
+opcoes_create: TABLE { ptg_write("TABLE ");}
+| DATABASE { ptg_write("DATABASE ");} 
+;
+
+colunas: literal tipo_dados
+| literal tipo_dados comma colunas
+;
+
 atributos: ASTERISC { ptg_write("*");}
 | literais 
 ;
@@ -88,10 +112,11 @@ atributos: ASTERISC { ptg_write("*");}
 literal: LITERAL { ptg_write($1);}
 ;
 
-
-
 semicolon: SEMICOLON { ptg_write(";");}
 |
+;
+
+comma: COMMA { ptg_write(", ");}
 ;
 
 from: FROM { ptg_write(" FROM ");} 

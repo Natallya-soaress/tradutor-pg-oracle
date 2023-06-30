@@ -1,1 +1,1 @@
-CREATE TABLE tableName
+CREATE TABLE pessoanome CHAR, salario VARCHAR2, carro FLOAT;
