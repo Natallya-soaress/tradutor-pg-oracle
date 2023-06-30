@@ -1,6 +1,6 @@
 reset
-if flex tradutor.l; then
-    if yacc -d tradutor.y; then
+if flex scanner.l; then
+    if yacc -d parser.y; then
         if gcc lex.yy.c y.tab.c -o lexical_analysis -lfl; then
             ./lexical_analysis < input.txt 
             cat result.sql

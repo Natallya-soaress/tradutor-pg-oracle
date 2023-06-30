@@ -6,6 +6,7 @@
 %}
 
 %option noyywrap
+%option yylineno
 
 LITERAl [a-zA-Z_0-9".%]+
 
@@ -50,7 +51,8 @@ LITERAl [a-zA-Z_0-9".%]+
 "PRIMARY"               { return PRIMARY; }
 "KEY"                   { return KEY; }
 "UNIQUE"                { return UNIQUE; }
-"references"            { return FK; }
+"FOREIGN"               { return FOREIGN; }
+"REFERENCES"            { return REFERENCES; }
 "CHECK"                 { return CHECK; }
 "CREATE"                { return CREATE; }
 "ALTER"                 { return ALTER; }

@@ -3,8 +3,8 @@
 #include <stdlib.h>
 
 FILE *result;
-int yyerror();
 int yylex();
+extern int yylineno;
 
 void ptg_write(char *text){ 
     int total_length = sizeof(text);
@@ -25,9 +25,9 @@ void ptg_write(char *text){
 
 %token SELECT FROM WHERE OR AND ASTERISC SEMICOLON COMMA PONTO LP RP AC FC IGUAL MAIOR MAIOR_IGUAL MENOR MENOR_IGUAL DIFERENTE BETWEEN
 %token MAIS MENOS DIVISAO MODULO COMMENT INSERT INTO VALUES UPDATE SET DELETE LIKE LIMIT OFFSET NOT NULLL PRIMARY KEY UNIQUE FK CHECK
-%token CREATE ALTER TABLE CROSS INNER LEFT RIGHT FULL OUTER JOIN ON AS ADD DROP COLUMN MODIFY CONSTRAINT DATABASE GROUP ORDER BY SMALLINT 
+%token CREATE ALTER TABLE CROSS INNER LEFT RIGHT FULL OUTER JOIN ON AS ADD DROP COLUMN MODIFY FOREIGN CONSTRAINT DATABASE GROUP ORDER BY SMALLINT 
 %token INTEGER BIGINT SERIAL BIGSERIAL REAL DOUBLE PRECISION NUMERIC CHAR VARCHAR TEXT DATE TIME TIMESTAMP INTERVAL BOOLEAN BYTEA 
-%token BYTEA
+%token BYTEA REFERENCES
 
 %%
 
@@ -43,10 +43,16 @@ exp_select: inicio atributos from literal semicolon
 | inicio atributos from literal where condicoes semicolon
 ;
 
-exp_create: inicio opcoes_create literal LP colunas RP semicolon
+exp_create: exp_create_table
+| exp_create_database
+;
+
+exp_create_table: inicio TABLE { ptg_write("TABLE ");} literal colunas_create semicolon
+
+exp_create_database: inicio DATABASE { ptg_write("DATABASE ");}  literal semicolon
 
 tipo_dados: CHAR { ptg_write(" CHAR");}
-| VARCHAR { ptg_write(" VARCHAR2");}
+| VARCHAR { ptg_write(" VARCHAR2");} lp literal rp
 | TEXT { ptg_write(" CLOB");}
 | SMALLINT { ptg_write(" NUMBER(5)");}
 | INTEGER { ptg_write(" NUMBER(10)");}
@@ -80,10 +86,14 @@ literais : LITERAL { ptg_write($1);}
 | literais COMMA LITERAL { ptg_write(", "); ptg_write($3);}
 ;
 
-/*
-parenteses: LP {ptg_write("\( ") ;}
-| RP {ptg_write(" \)");}
-; */
+restricoes: NOT { ptg_write(" NOT");} NULLL { ptg_write(" NULL ");} comma restricoes
+| NULLL { ptg_write(" NULL ");} comma restricoes
+| PRIMARY KEY { ptg_write(" PRIMARY KEY ");} comma restricoes 
+| foreigh_key comma restricoes
+|
+;
+
+foreigh_key: CONSTRAINT literal FOREIGN KEY { ptg_write(" FOREIGN KEY ");} lp literal rp REFERENCES {ptg_write(" REFERENCES ") ;} literal lp literal rp
 
 where: WHERE { ptg_write(" WHERE ");}
 
@@ -97,12 +107,11 @@ funcoes_where: literal BETWEEN { ptg_write(" BETWEEN ");} literal AND { ptg_writ
 | literal NOT { ptg_write(" NOT");} LIKE { ptg_write(" LIKE ");} literal
 ;
 
-opcoes_create: TABLE { ptg_write("TABLE ");}
-| DATABASE { ptg_write("DATABASE ");} 
+colunas: literal tipo_dados restricoes
+| literal tipo_dados restricoes comma colunas
 ;
 
-colunas: literal tipo_dados
-| literal tipo_dados comma colunas
+colunas_create: lp colunas rp
 ;
 
 atributos: ASTERISC { ptg_write("*");}
@@ -120,6 +129,11 @@ comma: COMMA { ptg_write(", ");}
 ;
 
 from: FROM { ptg_write(" FROM ");} 
+
+rp: RP {ptg_write(") ") ;}
+
+lp: LP {ptg_write("(") ;}
+
 
 %%
 

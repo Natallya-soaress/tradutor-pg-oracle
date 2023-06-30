@@ -1,1 +1,1 @@
-CREATE TABLE pessoanome CHAR, salario VARCHAR2, carro FLOAT;
+CREATE TABLE contacts(contact_id NUMBER(10), customer_id NUMBER(10), contact_name VARCHAR2(255)  NOT NULL , 
