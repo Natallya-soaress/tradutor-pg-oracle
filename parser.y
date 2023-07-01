@@ -4,7 +4,6 @@
 
 FILE *result;
 extern int yylineno;
-int err = 1;
 
 void ptg_write(char *text){ 
     int total_length = sizeof(text);
@@ -53,7 +52,7 @@ exp_create_table: inicio TABLE { ptg_write("TABLE ");} literal colunas_create se
 
 exp_create_database: inicio DATABASE { ptg_write("DATABASE ");} literal semicolon
 
-tipo_dados: CHAR { ptg_write(" CHAR");}
+tipo_dados: CHAR { ptg_write(" CHAR");} lp literal rp
 | VARCHAR { ptg_write(" VARCHAR2");} lp literal rp
 | TEXT { ptg_write(" CLOB");}
 | SMALLINT { ptg_write(" NUMBER(5)");}
@@ -93,14 +92,19 @@ restricoes: NOT { ptg_write(" NOT");} NULLL { ptg_write(" NULL");}
 | primary_key
 | foreigh_key 
 | unique
+| check
 | restricoes comma restricoes
 |
 ;
 
-foreigh_key: CONSTRAINT literal FOREIGN KEY { ptg_write(" FOREIGN KEY ");} lp literal rp REFERENCES {ptg_write(" REFERENCES ") ;} literal lp literal rp
+check: CHECK { ptg_write(" CHECK ");} lp condicoes rp
+| constraint literal CHECK { ptg_write(" CHECK ");} lp condicoes rp
 ;
 
-primary_key: PRIMARY KEY { ptg_write(" PRIMARY KEY ");} lp literais rp
+foreigh_key: constraint literal FOREIGN KEY { ptg_write(" FOREIGN KEY ");} lp literal rp REFERENCES {ptg_write(" REFERENCES ") ;} literal lp literal rp
+;
+
+primary_key: PRIMARY KEY LP LITERAL RP { ptg_write("CONSTRAINT unq_");} { ptg_write($4);} { ptg_write(" PRIMARY KEY (");} { ptg_write($4);} { ptg_write(")");}
 | PRIMARY KEY { ptg_write(" PRIMARY KEY");}
 ;
 
@@ -119,6 +123,7 @@ funcoes_where: literal BETWEEN { ptg_write(" BETWEEN ");} literal AND { ptg_writ
 colunas: literal tipo_dados restricoes
 | literal tipo_dados restricoes comma colunas
 | PRIMARY KEY { ptg_write("PRIMARY KEY ");} lp literais rp comma colunas
+| check comma colunas
 ;
 
 colunas_create: lp colunas rp
@@ -128,9 +133,8 @@ atributos: ASTERISC { ptg_write("*");}
 | literais 
 ;
 
-unique: UNIQUE { ptg_write(" UNIQUE");}
-| UNIQUE { ptg_write("UNIQUE");} lp literais rp
-| CONSTRAINT literal UNIQUE { ptg_write(" UNIQUE");} lp literais rp
+unique: UNIQUE { ptg_write(" UNIQUE");} 
+| UNIQUE LP LITERAL RP { ptg_write("CONSTRAINT unq_");} { ptg_write($3);} { ptg_write(" UNIQUE (");} { ptg_write($3);} { ptg_write(")");}
 ;
 
 literal: LITERAL { ptg_write($1);}
@@ -145,6 +149,9 @@ comma: COMMA { ptg_write(", ");}
 
 from: FROM { ptg_write(" FROM ");} 
 
+constraint: CONSTRAINT { ptg_write(" CONSTRAINT ");} 
+;
+
 rp: RP {ptg_write(")") ;}
 
 lp: LP {ptg_write("(") ;}
@@ -154,7 +161,6 @@ lp: LP {ptg_write("(") ;}
 
 yyerror (char *s){
     printf("\033[0;31m%s na linha \033[0;37m%d\033[0;37m\n", s, yylineno);
-    err = 0;
 }
 
 int main(){

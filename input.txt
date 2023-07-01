@@ -1,7 +1,7 @@
 CREATE TABLE Alunos (
-  PRIMARY KEY (Coluna1), 
-  Nome_Aluno TEXT NOT NULL,
-  CPF TEXT,
+  ID_Aluno INTEGER,
+  Nome_Aluno TEXT NOT NULL
+  CPF TEXT UNIQUE,
   Idade NUMERIC,
-  CONSTRAINT nomee UNIQUE (Nome_Aluno, Hora_Matricula)
+  PRIMARY KEY (ID_Aluno)
 );

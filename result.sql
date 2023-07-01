@@ -1,1 +1,1 @@
-CREATE TABLE Alunos(PRIMARY KEY (Coluna1), Nome_Aluno CLOB NOT NULL, CPF CLOB, Idade NUMBER, nomee UNIQUE(Nome_Aluno, Hora_Matricula));
+CREATE TABLE Alunos(ID_Aluno NUMBER(10), Nome_Aluno CLOB NOT NULL
