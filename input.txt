@@ -1,7 +1,2 @@
-CREATE TABLE Alunos (
-  ID_Aluno INTEGER,
-  Nome_Aluno TEXT NOT NULL
-  CPF TEXT UNIQUE,
-  Idade NUMERIC,
-  PRIMARY KEY (ID_Aluno)
-);
+SELECT * FROM table_name;
+INSERT INTO links(link_title,url) VALUES('PostgreSQL','https.com');

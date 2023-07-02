@@ -28,16 +28,24 @@ void ptg_write(char *text){
 %token MAIS MENOS DIVISAO MODULO COMMENT INSERT INTO VALUES UPDATE SET DELETE LIKE LIMIT OFFSET NOT NULLL PRIMARY KEY UNIQUE FK CHECK
 %token CREATE ALTER TABLE CROSS INNER LEFT RIGHT FULL OUTER JOIN ON AS ADD DROP COLUMN MODIFY FOREIGN CONSTRAINT DATABASE GROUP ORDER BY SMALLINT 
 %token INTEGER BIGINT SERIALL BIGSERIAL REAL DOUBLE PRECISION NUMERIC CHAR VARCHAR TEXT DATE TIME TIMESTAMP INTERVAL BOOLEAN BYTEA 
-%token BYTEAA REFERENCES SERIAL
+%token BYTEAA REFERENCES SERIAL DEFAULT FALSE TRUE TO RENAME TYPE
 
 %%
 
 expressao: exp_select 
 | exp_create
+| exp_alter
+| exp_insert
+| expressao expressao
 ;
 
 inicio: SELECT { ptg_write("SELECT ");}
 | CREATE { ptg_write("CREATE ");} 
+| ALTER TABLE { ptg_write("ALTER TABLE ");} 
+| INSERT INTO { ptg_write("INSERT INTO ");} 
+;
+
+exp_insert: inicio literal lp literais rp values lp literais rp semicolon
 ;
 
 exp_select: inicio atributos from literal semicolon
@@ -48,9 +56,21 @@ exp_create: exp_create_table
 | exp_create_database
 ;
 
+exp_alter: inicio literal add_columns semicolon
+| inicio literal drop_column semicolon
+| inicio literal rename_column semicolon
+| inicio literal alter_column 
+;
+
+add_columns: add_column literal tipo_dados restricoes
+| add_columns comma add_columns
+;
+
 exp_create_table: inicio TABLE { ptg_write("TABLE ");} literal colunas_create semicolon
+;
 
 exp_create_database: inicio DATABASE { ptg_write("DATABASE ");} literal semicolon
+;
 
 tipo_dados: CHAR { ptg_write(" CHAR");} lp literal rp
 | VARCHAR { ptg_write(" VARCHAR2");} lp literal rp
@@ -67,8 +87,10 @@ tipo_dados: CHAR { ptg_write(" CHAR");} lp literal rp
 | TIME { ptg_write(" DATE");}
 | TIMESTAMP
 | INTERVAL { ptg_write(" INTERVAL");}
-| BOOLEAN
 | BYTEAA { ptg_write(" BLOB");}
+| BOOLEAN { ptg_write(" NUMBER(1, 0)"); }
+| TRUE { ptg_write(" 1"); }
+| FALSE { ptg_write(" 0"); }
 ;
 
 operadores_comparativos: IGUAL { ptg_write(" = ");}
@@ -89,12 +111,17 @@ literais : LITERAL { ptg_write($1);}
 
 restricoes: NOT { ptg_write(" NOT");} NULLL { ptg_write(" NULL");} 
 | NULLL { ptg_write(" NULL ");} 
+| default
 | primary_key
 | foreigh_key 
 | unique
 | check
-| restricoes comma restricoes
+| restricoes restricoes
 |
+;
+
+default: DEFAULT { ptg_write(" DEFAULT");} tipo_dados
+| DEFAULT { ptg_write(" DEFAULT ");} literal
 ;
 
 check: CHECK { ptg_write(" CHECK ");} lp condicoes rp
@@ -140,14 +167,33 @@ unique: UNIQUE { ptg_write(" UNIQUE");}
 literal: LITERAL { ptg_write($1);}
 ;
 
-semicolon: SEMICOLON { ptg_write(";");}
+semicolon: SEMICOLON { ptg_write(";\n");}
 |
 ;
+
+add_column: ADD COLUMN { ptg_write(" ADD ");}
+;
+
+drop_column: DROP COLUMN { ptg_write(" DROP COLUMN ");} literal
+;
+
+rename_column: RENAME COLUMN { ptg_write(" RENAME COLUMN ");} literal TO { ptg_write(" TO ");} literal
+;
+
+alter_column: ALTER COLUMN { ptg_write(" MODIFY(");} literal type tipo_dados restricoes semicolon
 
 comma: COMMA { ptg_write(", ");}
 ;
 
 from: FROM { ptg_write(" FROM ");} 
+;
+
+values: VALUES { ptg_write(" VALUES ");}
+;
+
+type: TYPE
+| 
+;
 
 constraint: CONSTRAINT { ptg_write(" CONSTRAINT ");} 
 ;

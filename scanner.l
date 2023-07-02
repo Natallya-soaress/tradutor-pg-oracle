@@ -93,6 +93,12 @@ LITERAl [a-zA-Z_0-9".%]+
 "BOOLEAN"               { return BOOLEAN; }
 "BYTEA"                 { return BYTEAA; }
 "SERIAL"                { return SERIALL; }
+"DEFAULT"               { return DEFAULT; }
+"FALSE"                 { return FALSE; }
+"TRUE"                  { return TRUE; }
+"TO"                    { return TO; }
+"RENAME"                { return RENAME; }
+"TYPE"                  { return TYPE; }
 {LITERAl}               { yylval.p_string = malloc(yyleng); sprintf(yylval.p_string, "%s", yytext); return LITERAL; }
 . {}
 

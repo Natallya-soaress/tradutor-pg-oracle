@@ -1,1 +1,2 @@
-CREATE TABLE Alunos(ID_Aluno NUMBER(10), Nome_Aluno CLOB NOT NULL
+SELECT * FROM table_name;
+INSERT INTO links(link_title, url) VALUES (PostgreSQL, https.com);
