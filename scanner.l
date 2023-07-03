@@ -8,7 +8,7 @@
 %option noyywrap
 %option yylineno
 
-LITERAl [a-zA-Z_0-9".%]+
+LITERAl [a-zA-Z_0-9".%']+
 
 %% 
 
@@ -17,6 +17,7 @@ LITERAl [a-zA-Z_0-9".%]+
 "WHERE"                 { return WHERE; }
 "OR"                    { return OR; }
 "AND"                   { return AND; }
+"'"                     { return ASPA_SIMPLES; }
 "*"                     { return ASTERISC; }
 ";"                     { return SEMICOLON; }
 ","                     { return COMMA; }
