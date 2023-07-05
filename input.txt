@@ -1,9 +1,59 @@
-CREATE TABLE links (
-	id SERIAL PRIMARY KEY,
-	url VARCHAR(255) NOT NULL,
-	name VARCHAR(255) NOT NULL,
-	description VARCHAR (255),
-        last_update DATE
+ALTER TABLE links
+ADD COLUMN active BOOLEAN;
+
+ALTER TABLE links 
+DROP COLUMN active;
+
+ALTER TABLE links 
+RENAME COLUMN title TO link_title;
+
+ALTER TABLE links 
+ADD COLUMN target VARCHAR(10);
+
+ALTER TABLE links 
+ALTER COLUMN target
+SET DEFAULT '_blank';
+
+ALTER TABLE links 
+ADD CHECK (target IN ('_self', '_blank', '_parent', '_top'));
+
+ALTER TABLE links 
+ADD CONSTRAINT unique_url UNIQUE ( url );
+
+ALTER TABLE links 
+RENAME TO urls;
+
+INSERT INTO table_name(column1, column2)
+VALUES (value1, value2);
+
+INSERT INTO tabela (coluna1, coluna2, coluna3) VALUES (valor1, valor2, valor3), (valor4, valor5, valor6), (valor7, valor8, valor9);
+
+INSERT INTO tabela_destino (coluna1, coluna2, coluna3)
+SELECT coluna1, coluna2, coluna3 FROM tabela_origem WHERE atributo = atributo;
+
+CREATE TABLE COMPANY(
+   ID INT PRIMARY KEY     NOT NULL,
+   NAME           TEXT    NOT NULL,
+   AGE            INT     NOT NULL,
+   ADDRESS        CHAR(50),
+   SALARY         REAL
 );
 
-INSERT INTO links (url, name) VALUES('https.com','PostgreSQL Tutorial jahs uaia');
+CREATE TABLE tbl_editoras (
+ ID_Editora INT CONSTRAINT pk_id_editora PRIMARY KEY,
+ Nome_Editora VARCHAR(35) UNIQUE NOT NULL,
+ UNIQUE (Nome_Genero)
+);
+
+CREATE TABLE tbl_livros (
+ ID_Livro SERIAL CONSTRAINT pk_id_livro PRIMARY KEY,
+ Nome_Livro VARCHAR(50) NOT NULL,
+ Autor INTEGER NOT NULL,
+ Editora INTEGER NOT NULL,
+ Data_Pub DATE,
+ Genero INTEGER NOT NULL,
+ Preco_Livro DOUBLE,
+ FOREIGN KEY (Autor) REFERENCES tbl_autores (ID_Autor),
+ FOREIGN KEY (Editora) REFERENCES tbl_editoras (ID_Editora),
+ FOREIGN KEY (Genero) REFERENCES tbl_generos (ID_Genero)
+);

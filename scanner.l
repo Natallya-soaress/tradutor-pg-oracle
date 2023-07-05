@@ -66,6 +66,7 @@ LITERAl [a-zA-Z_0-9".%']+
 "OUTER"                 { return OUTER; }
 "JOIN"                  { return JOIN; }
 "ON"                    { return ON; }
+"IN"                    { return IN; }
 "AS"                    { return AS; }
 "ADD"                   { return ADD; }
 "DROP"                  { return DROP; }
@@ -78,6 +79,7 @@ LITERAl [a-zA-Z_0-9".%']+
 "BY"                    { return BY; }
 "SMALLINT"              { return SMALLINT; }
 "INTEGER"               { return INTEGER; }
+"INT"                   { return INT; }
 "BIGINT"                { return BIGINT; }
 "SERIAL"                { return SERIAL; }
 "BIGSERIAL"             { return BIGSERIAL; }
