@@ -105,6 +105,7 @@ operadores_comparativos: IGUAL { ptg_write(" = ");}
 | MENOR { ptg_write(" < ");}
 | MAIOR_IGUAL { ptg_write(" >= ");}
 | MAIOR { ptg_write(" > ");}
+| DIFERENTE { ptg_write(" <> ");}
 ;
 
 operadores_logicos: AND { ptg_write(" AND ");}
@@ -224,8 +225,12 @@ constraint: CONSTRAINT { ptg_write(" CONSTRAINT ");}
 ;
 
 add_constraint: ADD { ptg_write(" ADD CONSTRAINT const"); } possibilidades_constraints lp condicoes rp
-| add_constraint: ADD CONSTRAINT { ptg_write(" ADD CONSTRAINT "); } literal possibilidades_constraints lp literal rp
+| ADD CONSTRAINT { ptg_write(" ADD CONSTRAINT "); } literal possibilidades_constraints lp opcoes_constraint rp
 | 
+;
+
+opcoes_constraint: literal
+| condicoes
 ;
 
 possibilidades_constraints: CHECK { ptg_write(" CHECK ");}

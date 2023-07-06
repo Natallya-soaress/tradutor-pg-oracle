@@ -12,3 +12,9 @@ INSERT INTO tabela_destino(coluna1, coluna2, coluna3)SELECT coluna1, coluna2, co
 CREATE TABLE COMPANY(ID NUMBER(10) PRIMARY KEY NOT NULL, NAME CLOB NOT NULL, AGE NUMBER(10) NOT NULL, ADDRESS CHAR(50), SALARY FLOAT);
 CREATE TABLE tbl_editoras(ID_Editora NUMBER(10) CONSTRAINT pk_id_editora PRIMARY KEY, Nome_Editora VARCHAR2(35) UNIQUE NOT NULL, CONSTRAINT unq_Nome_Genero UNIQUE (Nome_Genero));
 CREATE TABLE tbl_livros(ID_Livro NUMBER  CONSTRAINT pk_id_livro PRIMARY KEY, Nome_Livro VARCHAR2(50) NOT NULL, Autor NUMBER(10) NOT NULL, Editora NUMBER(10) NOT NULL, Data_Pub DATE, Genero NUMBER(10) NOT NULL, Preco_Livro FLOAT,  FOREIGN KEY (Autor) REFERENCES tbl_autores(ID_Autor),  FOREIGN KEY (Editora) REFERENCES tbl_editoras(ID_Editora),  FOREIGN KEY (Genero) REFERENCES tbl_generos(ID_Genero));
+CREATE TABLE tabela(coluna NUMBER(10) CHECK (coluna >= 0 AND coluna <= 100));
+ALTER TABLE tabela ADD CONSTRAINT check_nome CHECK (nome <> 'uau');
+CREATE TABLE tabela(coluna1 NUMBER(10), coluna2 NUMBER(10),  CHECK (coluna1 < coluna2));
+CREATE TABLE tabela(coluna1 NUMBER(10), coluna2 VARCHAR2(50) DEFAULT 'valor_padrao', coluna3 DATE DEFAULT CURRENT_DATE);
+ALTER TABLE tabela ADD coluna4 NUMBER(10) DEFAULT 0;
+ALTER TABLE tabela MODIFY(coluna1 DEFAULT 10);

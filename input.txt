@@ -57,3 +57,31 @@ CREATE TABLE tbl_livros (
  FOREIGN KEY (Editora) REFERENCES tbl_editoras (ID_Editora),
  FOREIGN KEY (Genero) REFERENCES tbl_generos (ID_Genero)
 );
+
+CREATE TABLE tabela (
+  coluna INT CHECK (coluna >= 0 AND coluna <= 100)
+);
+
+ALTER TABLE tabela
+ADD CONSTRAINT check_nome CHECK (nome != 'uau');
+
+CREATE TABLE tabela (
+  coluna1 INT,
+  coluna2 INT,
+  CHECK (coluna1 < coluna2)
+);
+
+CREATE TABLE tabela (
+  coluna1 INT,
+  coluna2 VARCHAR(50) DEFAULT 'valor_padrao',
+  coluna3 DATE DEFAULT CURRENT_DATE
+);
+
+ALTER TABLE tabela
+ADD COLUMN coluna4 INT DEFAULT 0;
+
+ALTER TABLE tabela
+ALTER COLUMN coluna1 SET DEFAULT 10;
+
+
+
